@@ -89,7 +89,7 @@ int main() {
   }
   if (time.isStarted()) {
     time.stop();
-    std::cout << "Han pasado " << time.elapsed() << " microsegundos \n";
+    std::cout << "Han pasado " << time.elapsed() << "microsegundos \n";
   }
   return 0;
 }
