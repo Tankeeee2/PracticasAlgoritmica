@@ -43,20 +43,17 @@ void ordenacionSeleccion()
 
     std::cout << "Ecuacion curva ajustada= " << a[0] << "+" << a[1] << "*n+" << a[2] << "*n^2" << std::endl;
     std::cout << "Coeficiente de determinacion= " << coefDet << std::endl;
-    do
+    std::cout << "Introduce un tamaño para la estimación de tiempo (0 para omitir): ";
+    std::cin >> n_estimar;
+    if (n_estimar != 0)
     {
-        std::cout << "Estimacion de tiempos(Si->Introduce un tamaño/No->tamaño=0" << std::endl;
-        std::cin >> n_estimar;
-        if (n_estimar != 0)
-        {
-            double tiempo = calcularTiempoEstimadosPolinomico(n_estimar, a);
-            double seg = tiempo / 1000000;
-            double min = seg / 60;
-            double dias = min / (24 * 60);
-            double years = dias / 365;
-            std::cout << "Tiempo estimado= " << years << " años, " << dias << " dias, " << min << " min, " << seg << " seg" << std::endl;
-        }
-    } while (n_estimar != 0);
+        double tiempo = calcularTiempoEstimadosPolinomico(n_estimar, a);
+        double seg = tiempo / 1000000;
+        double min = seg / 60;
+        double dias = min / (24 * 60);
+        double years = dias / 365;
+        std::cout << "Tiempo estimado= " << years << " años, " << dias << " dias, " << min << " min, " << seg << " seg" << std::endl;
+    }
 }
 
 void ordenacionQuicksort()
