@@ -75,6 +75,7 @@ public:
   }
 };
 
+/**
 int main() {
   Clock time;
   unsigned int a, b;
@@ -93,3 +94,4 @@ int main() {
   }
   return 0;
 }
+*/
