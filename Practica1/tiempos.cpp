@@ -16,12 +16,13 @@ void tiemposOrdenacionSeleccion(int nMin, int nMax, int incremento, int repetici
 
     for (int i = nMin; i <= nMax; i = i + incremento)
     {
+        tiempo = 0;
         for (int j = 0; j < repeticiones; j++)
         {
             std::vector<int> v(i);
             rellenarVector(v);
             time.start();
-            algoritmoOrdenacionSeleccion(v);
+            ordenacionSeleccion(v);
             if (time.isStarted())
             {
                 time.stop();
@@ -38,44 +39,20 @@ void tiemposOrdenacionSeleccion(int nMin, int nMax, int incremento, int repetici
     }
 }
 
-void ordenacionQuickSort()
+void tiemposOrdenacionQuicksort(int nMin, int nMax, int incremento, int repeticiones, std::vector<double> &tiemposReales, std::vector<double> &numeroElementos)
 {
     Clock time;
-
-    int nMin = 1000;
-    int nMax = 5000;
-    int inc = 50;
-    int repeat = 10;
-    int n = 0;
     double tiempo = 0;
-    double coefDet;
-    double seg;
-    double min;
-    double dias;
-    double years;
 
-    std::vector<double> tiemposReales;
-    std::vector<double> numeroElementos;
-    std::vector<double> a;
-    std::vector<double> tiemposEstimados;
-
-    std::cout << "nMin= ";
-    std::cin >> nMin;
-    std::cout << "nMax= ";
-    std::cin >> nMax;
-    std::cout << "inc= ";
-    std::cin >> inc;
-    std::cout << "repeat= ";
-    std::cin >> repeat;
-
-    for (int i = nMin; i <= nMax; i = i + inc)
+    for (int i = nMin; i <= nMax; i = i + incremento)
     {
-        for (int j = 0; j < repeat; j++)
+        tiempo = 0;
+        for (int j = 0; j < repeticiones; j++)
         {
             std::vector<int> v(i);
             rellenarVector(v);
             time.start();
-            std::sort(v.begin(), v.end());
+            ordenacionQuicksort(v);
             if (time.isStarted())
             {
                 time.stop();
@@ -84,43 +61,40 @@ void ordenacionQuickSort()
             {
                 std::cout << "Error, no se ha realizado la ordenacion" << std::endl;
             }
-            else
-            {
-                // std::cout<<"Esta ordenado"<<std::endl;
-            }
             tiempo = time.elapsed() + tiempo;
         }
-        tiempo = tiempo / repeat;
-        // std::cout<<"Tiempo medio= "<<tiempo<<std::endl;
+        tiempo = tiempo / repeticiones;
         tiemposReales.push_back(tiempo);
         numeroElementos.push_back(i);
     }
-    fichero(tiemposReales, numeroElementos);
+}
 
-    ajusteNlogN(numeroElementos, tiemposReales, a);
+// Esta función se mantiene para compatibilidad pero no se usa directamente
+// La lógica está en medio_nivel.cpp
+void ordenacionQuickSort()
+{
+    // Función vacía - la lógica está en medio_nivel.cpp
+}
 
-    calcularTiemposEstimadoNlogN(numeroElementos, a, tiemposEstimados);
+void tiemposDeterminanteIterativo(int nMin, int nMax, int incremento, std::vector<double> &tiemposReales, std::vector<double> &numeroElementos)
+{
+    Clock time;
+    double tiempo = 0;
 
-    coefDet = calcularCoeficienteDeterminacion(tiemposReales, tiemposEstimados);
-
-    datosFinales(numeroElementos, tiemposReales, tiemposEstimados);
-
-    std::cout << "Ecuacion curva ajustada= " << a[0] << "+" << a[1] << "*n*log10(n)" << std::endl;
-    std::cout << "Coeficiente de determinacion= " << coefDet << std::endl;
-    do
+    for (int i = nMin; i <= nMax; i = i + incremento)
     {
-        std::cout << "Estimacion de tiempos(Si->Introduce un tamaño/No->tamaño=0" << std::endl;
-        std::cin >> n;
-        if (n != 0)
+        std::vector<std::vector<double>> M(i, std::vector<double>(i));
+        rellenarMatriz(M);
+        time.start();
+        double det = determinanteIterativo(M);
+        if (time.isStarted())
         {
-            tiempo = calcularTiempoEstimadoNlogN(n, a);
-            seg = tiempo / 1000000;
-            min = seg / 60;
-            dias = min / (24 * 60);
-            years = dias / 365;
-            std::cout << "Tiempo estimado= " << years << " años, " << dias << " dias, " << min << " min, " << seg << " seg" << std::endl;
+            time.stop();
         }
-    } while (n != 0);
+        tiempo = time.elapsed();
+        tiemposReales.push_back(tiempo);
+        numeroElementos.push_back(i);
+    }
 }
 
 void determinanteRecursivo()
@@ -236,7 +210,7 @@ void ajusteNlogN(const std::vector<double> &numeroElementos, std::vector<double>
     }
 }
 
-void calcularTiemposEstimadoNlogN(const std::vector<double> &numeroElementos, const std::vector<double> &a, std::vector<double> &tiemposEstimados)
+void calcularTiemposEstimadosNlogN(const std::vector<double> &numeroElementos, const std::vector<double> &a, std::vector<double> &tiemposEstimados)
 {
     for (size_t i = 0; i < numeroElementos.size(); i++)
     {
@@ -373,7 +347,7 @@ void calcularMatrices(const std::vector<double> &numeroElementos, const std::vec
     }
 }
 
-void ajustePolinomico(std::vector<double> &n, std::vector<double> &tiemposReales, std::vector<double> &a)
+void ajustePolinomico(const std::vector<double> &n, const std::vector<double> &tiemposReales, std::vector<double> &a)
 {
     std::vector<std::vector<double>> A;
     std::vector<std::vector<double>> B;
@@ -401,7 +375,40 @@ void calcularTiemposEstimadosPolinomico(const std::vector<double> &n, std::vecto
     }
 }
 
-double calcularTiempoEstimadosPolinomico(const double &n, const std::vector<double> &a)
+double calcularTiempoEstimadoPolinomico(const double &n, const std::vector<double> &a)
 {
     return a[0] + a[1] * n + a[2] * pow(n, 2);
+}
+
+void ajustePolinomicoDegree3(const std::vector<double> &n, const std::vector<double> &tiemposReales, std::vector<double> &a)
+{
+    std::vector<std::vector<double>> A;
+    std::vector<std::vector<double>> B;
+    std::vector<std::vector<double>> X;
+
+    A = std::vector<std::vector<double>>(4, std::vector<double>(4));
+    B = std::vector<std::vector<double>>(4, std::vector<double>(1));
+    X = std::vector<std::vector<double>>(4, std::vector<double>(1));
+
+    calcularMatrices(n, tiemposReales, 4, A, B);
+
+    resolverSistemaEcuaciones(A, B, 4, X);
+
+    for (int i = 0; i < 4; i++)
+    {
+        a.push_back(X[i][0]);
+    }
+}
+
+void calcularTiemposEstimadosPolinomicoDegree3(const std::vector<double> &n, const std::vector<double> &a, std::vector<double> &tiemposEstimados)
+{
+    for (size_t i = 0; i < n.size(); i++)
+    {
+        tiemposEstimados.push_back(a[0] + a[1] * n[i] + a[2] * pow(n[i], 2) + a[3] * pow(n[i], 3));
+    }
+}
+
+double calcularTiempoEstimadoPolinomicoDegree3(const double &n, const std::vector<double> &a)
+{
+    return a[0] + a[1] * n + a[2] * pow(n, 2) + a[3] * pow(n, 3);
 }
