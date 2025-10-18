@@ -69,13 +69,6 @@ void tiemposOrdenacionQuicksort(int nMin, int nMax, int incremento, int repetici
     }
 }
 
-// Esta función se mantiene para compatibilidad pero no se usa directamente
-// La lógica está en medio_nivel.cpp
-void ordenacionQuickSort()
-{
-    // Función vacía - la lógica está en medio_nivel.cpp
-}
-
 void tiemposDeterminanteIterativo(int nMin, int nMax, int incremento, std::vector<double> &tiemposReales, std::vector<double> &numeroElementos)
 {
     Clock time;
@@ -95,84 +88,6 @@ void tiemposDeterminanteIterativo(int nMin, int nMax, int incremento, std::vecto
         tiemposReales.push_back(tiempo);
         numeroElementos.push_back(i);
     }
-}
-
-void determinanteRecursivo()
-{
-    Clock time;
-
-    int nMin = 2;
-    int nMax = 10;
-    int inc = 1;
-    int k = 0;
-    double tiempo = 0;
-    double det = 0;
-    double coefDet;
-    double seg;
-    double min;
-    double dias;
-    double years;
-
-    std::vector<std::vector<double>> M;
-    std::vector<std::vector<double>> inv;
-    std::vector<double> tiemposReales;
-    std::vector<double> n;
-    std::vector<double> a;
-    std::vector<double> tiemposEstimados;
-
-    std::cout << "nMin= ";
-    std::cin >> nMin;
-    std::cout << "nMax= ";
-    std::cin >> nMax;
-    std::cout << "inc= ";
-    std::cin >> inc;
-
-    for (int i = nMin; i <= nMax; i = i + inc)
-    {
-
-        M = std::vector<std::vector<double>>(i, std::vector<double>(i));
-        rellenarMatriz(M);
-        time.start();
-        det = algrecursivo(M, i);
-
-        if (time.isStarted())
-        {
-            time.stop();
-        }
-        std::cout << "detM[" << i << "][" << i << "]= " << det << std::endl;
-
-        tiempo = time.elapsed() + tiempo;
-        tiemposReales.push_back(tiempo);
-        n.push_back(i);
-    }
-
-    fichero(tiemposReales, n);
-
-    ajusteFactorial(n, tiemposReales, a);
-
-    calcularTiemposEstimadosFactorial(n, tiemposReales, a, tiemposEstimados);
-
-    coefDet = calcularCoeficienteDeterminacion(tiemposReales, tiemposEstimados);
-
-    datosFinales(n, tiemposReales, tiemposEstimados);
-
-    std::cout << "Ecuacion curva ajustada= " << a[0] << "+" << a[1] << "*n!" << std::endl;
-    std::cout << "Coeficiente de determinacion= " << coefDet << std::endl;
-
-    do
-    {
-        std::cout << "Estimacion de tiempos(Si->Introduce un tamaño/No->tamaño=0" << std::endl;
-        std::cin >> k;
-        if (k != 0)
-        {
-            tiempo = calcularTiempoEstimadosFactorial(k, a);
-            seg = tiempo / 1000000;
-            min = seg / 60;
-            dias = min / (24 * 60);
-            years = dias / 365;
-            std::cout << "Tiempo estimado= " << years << " años, " << dias << " dias, " << min << " min, " << seg << " seg" << std::endl;
-        }
-    } while (k != 0);
 }
 
 void ajusteNlogN(const std::vector<double> &numeroElementos, std::vector<double> &tiemposReales, std::vector<double> &a)

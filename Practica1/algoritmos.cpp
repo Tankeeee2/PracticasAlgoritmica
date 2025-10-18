@@ -2,23 +2,6 @@
 #include <vector>
 #include <cmath>
 
-double algrecursivo(std::vector<std::vector<double>> &M, int b)
-{
-    double det = 0;
-    if (b == 1)
-    {
-        return M[0][0];
-    }
-    else if (b > 1)
-    {
-        for (int k = 1; k < b; k++)
-        {
-            det = pow(-1, 1 + k) * M[0][k] * algrecursivo(M, k);
-        }
-    }
-    return det;
-}
-
 void ordenacionSeleccion(std::vector<int> &v)
 {
     int min_idx;
