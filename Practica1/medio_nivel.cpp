@@ -1,6 +1,6 @@
 #include "medio_nivel.hpp"
 #include "tiempos.hpp"
-#include "ClaseTiempo.h"
+#include "ClaseTiempo.hpp"
 #include "algoritmos.hpp"
 #include "auxiliares.hpp"
 #include <iostream>

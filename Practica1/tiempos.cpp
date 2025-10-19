@@ -1,5 +1,5 @@
 #include "tiempos.hpp"
-#include "ClaseTiempo.h"
+#include "ClaseTiempo.hpp"
 #include "auxiliares.hpp"
 #include "algoritmos.hpp"
 #include "sistemaEcuaciones.hpp"
