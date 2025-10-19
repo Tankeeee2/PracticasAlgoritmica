@@ -91,7 +91,7 @@ void ordenacionQuicksort()
 
     datosFinales(numeroElementos, tiemposReales, tiemposEstimados);
 
-    std::cout << "Ecuacion curva ajustada= " << a[0] << "+" << a[1] << "*n*log10(n)" << std::endl;
+    std::cout << "Ecuacion curva ajustada= " << a[0] << "+" << a[1] << "*n*log(n)" << std::endl;
     std::cout << "Coeficiente de determinacion= " << coefDet << std::endl;
     std::cout << "Introduce un tamaño para la estimación de tiempo (0 para omitir): ";
     std::cin >> n_estimar;
