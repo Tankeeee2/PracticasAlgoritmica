@@ -103,7 +103,7 @@ void ajusteNlogN(const std::vector<double> &numeroElementos, std::vector<double>
 
     for (size_t i = 0; i < numeroElementos.size(); i++)
     {
-        z.push_back(numeroElementos[i] * log10(numeroElementos[i]));
+        z.push_back(numeroElementos[i] * log(numeroElementos[i]));
     }
 
     A[0][0] = numeroElementos.size();
@@ -129,13 +129,13 @@ void calcularTiemposEstimadosNlogN(const std::vector<double> &numeroElementos, c
 {
     for (size_t i = 0; i < numeroElementos.size(); i++)
     {
-        tiemposEstimados.push_back(a[0] + a[1] * numeroElementos[i] * log10(numeroElementos[i]));
+        tiemposEstimados.push_back(a[0] + a[1] * numeroElementos[i] * log(numeroElementos[i]));
     }
 }
 
 double calcularTiempoEstimadoNlogN(const double &n, std::vector<double> &a)
 {
-    return a[0] + a[1] * n * log10(n);
+    return a[0] + a[1] * n * log(n);
 }
 
 double sumatorio(const std::vector<double> &n, const std::vector<double> &t, int expN, int expT)
