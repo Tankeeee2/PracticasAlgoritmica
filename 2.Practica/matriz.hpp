@@ -19,13 +19,17 @@ class Matriz
     
     public:
     
-        Matriz(unsigned int f, unsigned int c)
+        Matriz(unsigned int f, unsigned int c) : _f(f), _c(c)
         {
-            //Completar
+            for (unsigned int i = 0; i < _f; i++) {
+                vector<double> nueva_fila(c);
+                _m.push_back(nueva_fila);
+            }
         };
 
         Matriz(){};
         ~Matriz(){};  // Destructor de la clase
+
         unsigned int getFilas() const
         {
             return _f;
@@ -35,6 +39,7 @@ class Matriz
         {
             return _c;
         };
+
         void setElemento(unsigned int i, unsigned int j, double x);
         double getElemento(unsigned int i, unsigned int j) const;
         void rellenarMatrizAleatoria();
@@ -79,7 +84,16 @@ void Matriz::rellenarMatrizAleatoria()
 
 void Matriz::rellenarMatrizUnidad()
 {
-    //Completar
+    assert(_f == _c); // Una matriz identidad debe ser cuadrada
+    for (unsigned int i = 0; i < _f; i++) {
+        for (unsigned int j = 0; j < _c; j++) {
+            if (i == j) {
+                setElemento(i, j, 1.0);
+            } else {
+                setElemento(i, j, 0.0);
+            }
+        }
+    }
 };
 
 ostream &operator << (ostream &salida, Matriz &z)
@@ -113,13 +127,30 @@ Matriz operator + (const Matriz &x, const Matriz &y)
 
 Matriz operator * (const Matriz &x, const Matriz &y)
 {
-    //Completar
+    assert(x.getColumnas() == y.getFilas());
 
+    Matriz resultado(x.getFilas(), y.getColumnas());
+
+    for (unsigned int i = 0; i < x.getFilas(); i++) {
+        for (unsigned int j = 0; j < y.getColumnas(); j++) {
+
+            double suma = 0.0;
+            for (unsigned int k = 0; k < x.getColumnas(); k++) {
+                suma += x.getElemento(i, k) * y.getElemento(k, j);
+
+            }
+
+            resultado.setElemento(i, j, suma);
+        }
+    }
+
+    return resultado;
 };
 
 Matriz Matriz::potencia(const unsigned int &n)const
 {
     //Completar
+
 };
 
 
