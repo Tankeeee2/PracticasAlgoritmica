@@ -1,30 +1,248 @@
 #include <iostream>
+#include <fstream>
+#include <chrono>
 #include "matriz.hpp"
 
-int main() {
-    Matriz A(2, 2);
-    Matriz B(2, 2);
+using namespace std;
+using namespace std::chrono;
 
-    A.setElemento(0, 0, 1); A.setElemento(0, 1, 2);
-    A.setElemento(1, 0, 3); A.setElemento(1, 1, 4);
+void mostrarMenu() {
+    cout << "\n=== MEDICIÓN DE ALGORITMOS DE EXPONENCIACIÓN DE MATRICES ===" << endl;
+    cout << "1. Exponenciación (algoritmo básico)" << endl;
+    cout << "2. ExponenciaciónDyV (algoritmo recursivo)" << endl;
+    cout << "3. ExponenciaciónDyV Iterativo (algoritmo iterativo)" << endl;
+    cout << "0. Salir" << endl;
+    cout << "Seleccione una opción: ";
+}
 
-    B.setElemento(0, 0, 5); B.setElemento(0, 1, 6);
-    B.setElemento(1, 0, 7); B.setElemento(1, 1, 8);
-
-    std::cout << "Matriz A:" << std::endl;
-    std::cout << A << std::endl;
-
-    std::cout << "Matriz B:" << std::endl;
-    std::cout << B << std::endl;
-
-    Matriz C = A * B;
-
-    std::cout << "Matriz C (Resultado de A * B):" << std::endl;
-    std::cout << C << std::endl;
+void MetodoPotencial() {
+    cout << "\n--- Medición Exponenciación (algoritmo básico) ---" << endl;
     
-    std::cout << "El resultado esperado para C es:" << std::endl;
-    std::cout << "               19.0000                22.0000 " << std::endl;
-    std::cout << "               43.0000                50.0000 " << std::endl;
+    int opcion;
+    cout << "\n1. Usar datos predefinidos (n=20-100, exponente=n)";
+    cout << "\n2. Ingresar parámetros manualmente";
+    cout << "\nSeleccione una opción: ";
+    cin >> opcion;
+    
+    unsigned int tamano, exponente;
+    
+    if (opcion == 1) {
+        // Modo automático
+        ofstream archivo("datosPotencia.txt"); // Sobrescribir archivo existente
+        archivo.close();
+        
+        for (tamano = 20; tamano <= 100; tamano++) {
+            exponente = tamano;
+            // Código existente para ejecutar la potencia
+            ofstream archivo("datosPotencia.txt", ios::app);
+            Matriz m(tamano, tamano);
+            m.rellenarMatrizAleatoria();
+            auto inicio = high_resolution_clock::now();
+            Matriz resultado = m.potencia(exponente);
+            auto fin = high_resolution_clock::now();
+            auto duracion = duration_cast<microseconds>(fin - inicio);
+            if (archivo.is_open()) {
+                archivo << tamano << " " << duracion.count() / 1000.0 << endl;
+                archivo.close();
+            }
+            cout << "Tamaño: " << tamano << "x" << tamano << " - Tiempo: " 
+                 << duracion.count() / 1000.0 << " ms" << endl;
+        }
+        cout << "\nPrueba completada. Resultados guardados en datosPotencia.txt" << endl;
+        return;
+    } else {
+        // Modo manual
+        cout << "\nIngrese el tamaño de la matriz (n x n): ";
+        cin >> tamano;
+        cout << "Ingrese el exponente: ";
+        cin >> exponente;
+    }
+    
+    // Abrir archivo para guardar resultados
+    ofstream archivo("datosPotencia.txt", ios::app);
+    
+    // Crear y rellenar matriz
+    Matriz m(tamano, tamano);
+    m.rellenarMatrizAleatoria();
+    
+    // Medir tiempo
+    auto inicio = high_resolution_clock::now();
+    Matriz resultado = m.potencia(exponente);
+    auto fin = high_resolution_clock::now();
+    
+    auto duracion = duration_cast<microseconds>(fin - inicio);
+    
+    // Guardar resultado en el archivo
+    if (archivo.is_open()) {
+        archivo << tamano << " " << duracion.count() / 1000.0 << endl;
+        archivo.close();
+    }
+    
+    cout << "Tiempo de ejecución: " << duracion.count() << " microsegundos" << endl;
+    cout << "Tiempo de ejecución: " << duracion.count() / 1000.0 << " milisegundos" << endl;
+}
 
+void MetodoDyV1() {
+    cout << "\n--- Medición ExponenciaciónDyV (algoritmo recursivo) ---" << endl;
+    
+    int opcion;
+    cout << "\n1. Usar datos predefinidos (n=20-100, exponente=n)";
+    cout << "\n2. Ingresar parámetros manualmente";
+    cout << "\nSeleccione una opción: ";
+    cin >> opcion;
+    
+    unsigned int tamano, exponente;
+    
+    if (opcion == 1) {
+        // Modo automático
+        ofstream archivo("datospotenciaDyV1.txt"); // Sobrescribir archivo existente
+        archivo.close();
+        
+        for (tamano = 20; tamano <= 100; tamano++) {
+            exponente = tamano;
+            // Código existente para ejecutar DyV1
+            ofstream archivo("datospotenciaDyV1.txt", ios::app);
+            Matriz m(tamano, tamano);
+            m.rellenarMatrizAleatoria();
+            auto inicio = high_resolution_clock::now();
+            Matriz resultado = m.potenciaDyV1(exponente);
+            auto fin = high_resolution_clock::now();
+            auto duracion = duration_cast<microseconds>(fin - inicio);
+            if (archivo.is_open()) {
+                archivo << tamano << " " << duracion.count() / 1000.0 << endl;
+                archivo.close();
+            }
+            cout << "Tamaño: " << tamano << "x" << tamano << " - Tiempo: " 
+                 << duracion.count() / 1000.0 << " ms" << endl;
+        }
+        cout << "\nPrueba completada. Resultados guardados en datospotenciaDyV1.txt" << endl;
+        return;
+    } else {
+        // Modo manual
+        cout << "\nIngrese el tamaño de la matriz (n x n): ";
+        cin >> tamano;
+        cout << "Ingrese el exponente: ";
+        cin >> exponente;
+    }
+    
+    // Abrir archivo para guardar resultados
+    ofstream archivo("datospotenciaDyV1.txt");
+    
+    // Crear y rellenar matriz
+    Matriz m(tamano, tamano);
+    m.rellenarMatrizAleatoria();
+    
+    // Medir tiempo
+    auto inicio = high_resolution_clock::now();
+    Matriz resultado = m.potenciaDyV1(exponente);
+    auto fin = high_resolution_clock::now();
+    
+    auto duracion = duration_cast<microseconds>(fin - inicio);
+    
+    // Guardar resultado en el archivo
+    if (archivo.is_open()) {
+        archivo << tamano << " " << duracion.count() / 1000.0 << endl;
+        archivo.close();
+    }
+    
+    cout << "Tiempo de ejecución: " << duracion.count() << " microsegundos" << endl;
+    cout << "Tiempo de ejecución: " << duracion.count() / 1000.0 << " milisegundos" << endl;
+}
+
+void MetodoDyV2() {
+    cout << "\n--- Medición ExponenciaciónDyV Iterativo (algoritmo iterativo) ---" << endl;
+    
+    int opcion;
+    cout << "\n1. Usar datos predefinidos (n=20-100, exponente=n)";
+    cout << "\n2. Ingresar parámetros manualmente";
+    cout << "\nSeleccione una opción: ";
+    cin >> opcion;
+    
+    unsigned int tamano, exponente;
+    
+    if (opcion == 1) {
+        // Modo automático
+        ofstream archivo("datospotenciaDyV2.txt"); // Sobrescribir archivo existente
+        archivo.close();
+        
+        for (tamano = 20; tamano <= 100; tamano++) {
+            exponente = tamano;
+            // Código existente para ejecutar DyV2
+            ofstream archivo("datospotenciaDyV2.txt", ios::app);
+            Matriz m(tamano, tamano);
+            m.rellenarMatrizAleatoria();
+            auto inicio = high_resolution_clock::now();
+            Matriz resultado = m.potenciaDyV2(exponente);
+            auto fin = high_resolution_clock::now();
+            auto duracion = duration_cast<microseconds>(fin - inicio);
+            if (archivo.is_open()) {
+                archivo << tamano << " " << duracion.count() / 1000.0 << endl;
+                archivo.close();
+            }
+            cout << "Tamaño: " << tamano << "x" << tamano << " - Tiempo: " 
+                 << duracion.count() / 1000.0 << " ms" << endl;
+        }
+        cout << "\nPrueba completada. Resultados guardados en datospotenciaDyV2.txt" << endl;
+        return;
+    } else {
+        // Modo manual
+        cout << "\nIngrese el tamaño de la matriz (n x n): ";
+        cin >> tamano;
+        cout << "Ingrese el exponente: ";
+        cin >> exponente;
+    }
+    
+    // Abrir archivo para guardar resultados
+    ofstream archivo("datospotenciaDyV2.txt", ios::app);
+    
+    // Crear y rellenar matriz
+    Matriz m(tamano, tamano);
+    m.rellenarMatrizAleatoria();
+    
+    // Medir tiempo
+    auto inicio = high_resolution_clock::now();
+    Matriz resultado = m.potenciaDyV2(exponente);
+    auto fin = high_resolution_clock::now();
+    
+    auto duracion = duration_cast<microseconds>(fin - inicio);
+    
+    // Guardar resultado en el archivo
+    if (archivo.is_open()) {
+        archivo << tamano << " " << duracion.count() / 1000.0 << endl;
+        archivo.close();
+    }
+    
+    cout << "Tiempo de ejecución: " << duracion.count() << " microsegundos" << endl;
+    cout << "Tiempo de ejecución: " << duracion.count() / 1000.0 << " milisegundos" << endl;
+}
+
+int main() {
+    srand(time(NULL));
+    
+    int opcion;
+    
+    do {
+        mostrarMenu();
+        cin >> opcion;
+        
+        switch(opcion) {
+            case 1:
+                MetodoPotencial();
+                break;
+            case 2:
+                MetodoDyV1();
+                break;
+            case 3:
+                MetodoDyV2();
+                break;
+            case 0:
+                cout << "Saliendo del programa." << endl;
+                break;
+            default:
+                cout << "Opción no válida. Intente de nuevo." << endl;
+        }
+        
+    } while(opcion != 0);
+    
     return 0;
 }

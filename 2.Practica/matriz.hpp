@@ -147,22 +147,89 @@ Matriz operator * (const Matriz &x, const Matriz &y)
     return resultado;
 };
 
-Matriz Matriz::potencia(const unsigned int &n)const
+Matriz Matriz::potencia(const unsigned int& n)const
 {
     //Completar
+    assert(_f == _c); // Exponenciación solo para matrices cuadradas
 
+    // Caso base: M^0 = Identidad
+    if (n == 0) {
+        Matriz id(_f, _c);
+        id.rellenarMatrizUnidad();
+        return id;
+    }
+
+    // Caso base: M^1 = M
+    if (n == 1) {
+        return *this;
+    }
+
+    Matriz resultado = *this; // Empezamos en M^1
+
+    // Multiplicamos (n-1) veces
+    for (unsigned int i = 2; i <= n; ++i) {
+        resultado = resultado * (*this);
+    }
+
+    return resultado;
 };
 
 
-Matriz Matriz::potenciaDyV1(const unsigned int &n)const
+Matriz Matriz::potenciaDyV1(const unsigned int& n)const
 {
     //Completar
+    assert(_f == _c);
+
+    // Caso base
+    if (n == 0) {
+        Matriz id(_f, _c);
+        id.rellenarMatrizUnidad();
+        return id;
+    }
+    // Caso base
+    if (n == 1) {
+        return *this;
+    }
+
+    if (n % 2 == 0) {
+        // n es par: M^n = (M^(n/2)) * (M^(n/2))
+        Matriz mitad = potenciaDyV1(n / 2);
+        Matriz mitad_por_mitad = mitad * mitad;
+        return mitad_por_mitad;
+    }
+    else {
+        // n es impar: M^n = M * (M^(n/2)) * (M^(n/2))
+        Matriz impar = potenciaDyV1(n - 1);
+        return *this * impar;
+    }
 };
 
-Matriz Matriz::potenciaDyV2(const unsigned int &n)const
+Matriz Matriz::potenciaDyV2(const unsigned int &n) const
 {
-    //Completar
-};
+    // Verificamos que la matriz sea cuadrada
+    assert(_f == _c);
+
+    Matriz resultado(_f, _c);
+    resultado.rellenarMatrizUnidad(); 
+
+    Matriz base = *this;
+    unsigned int exp = n;
+
+    if (exp == 0) return resultado;
+
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            resultado = resultado * base;
+        }
+
+        
+        exp = exp / 2; 
+
+
+        base = base * base;
+    }
+    return resultado;
+}
 
 bool operator == (const Matriz &x, const Matriz &y)
 {
